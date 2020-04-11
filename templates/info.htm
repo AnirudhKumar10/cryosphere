@@ -1,0 +1,128 @@
+{% extends "index.htm" %} {% block content %}
+<div class="row m-lg-5 m-3">
+  <div class="col-12">
+    <div id="map" class="w-100 rounded-lg"></div>
+  </div>
+</div>
+<div class="row m-lg-5 m-3">
+  <div class="col-12">
+    <form action="prediction" method="post">
+      <div class="form-group">
+        <select class="form-control" name="type">
+          <option value="1">Year(Number only)</option>
+          <option value="2">Temperature(in F)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="inputValue">Enter Value:</label>
+        <input
+          class="form-control"
+          type="text"
+          id="inputValue"
+          name="inputValue"
+        />
+      </div>
+      <button class="btn btn-success btn-block">Get Future Predictions</button>
+    </form>
+  </div>
+</div>
+<div class="row m-lg-5 m-3">
+  <div class="col-12">
+    <ul class="list-group w-100">
+      {% for i in range(1,4) %}
+      <li class="list-group-item">
+        <strong>{{mylist[i]}}:</strong>{{ cryosphere[0][i] }}
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <div class="col-6 my-2">
+    <button id="btn" class="btn btn-info btn-block" onclick="showMore()">
+      Show More
+    </button>
+  </div>
+  <div class="col-6 my-2">
+    <button
+      type="button"
+      class="btn btn-info btn-block"
+      data-toggle="modal"
+      data-target="#exampleModal"
+    >
+      Quickfacts
+    </button>
+  </div>
+
+  <div class="col-12">
+    <ul hidden="true" id="info" class="list-group w-100">
+      {% for i in range(4,16) %}
+      <li class="list-group-item">
+        <strong>{{mylist[i]}}:</strong>{{ cryosphere[0][i] }}
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    id="exampleModal"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  var lat = "{{ cryosphere[0][7] }}";
+  var lng = "{{ cryosphere[0][8] }}";
+  mapboxgl.accessToken =
+    "pk.eyJ1IjoiYW5pcnVkaGtyMzEwNCIsImEiOiJjazdqZTdwNjMwNHdrM2dxOGttemM3MGI0In0.vLsr8JABQGy9Ix3s6G8tnA";
+  var map = new mapboxgl.Map({
+    container: "map", // container id
+    style: "mapbox://styles/mapbox/streets-v11", // stylesheet location
+    center: [lng, lat], // starting position [lng, lat]
+    zoom: 6, // starting zoom
+  });
+  var marker = new mapboxgl.Marker().setLngLat([lng, lat]).addTo(map);
+  var marker = new mapboxgl.Marker().setLngLat(["{{lng}}", "{{lat}}"]).addTo(map);
+  console.log(lat);
+  console.log(lng);
+
+  function showMore() {
+    if (document.getElementById("info").hidden == true) {
+      document.getElementById("info").hidden = false;
+      document.getElementById("btn").innerHTML = "Show Less";
+    } else {
+      document.getElementById("info").hidden = true;
+      document.getElementById("btn").innerHTML = "Show More";
+    }
+  }
+</script>
+
+{% endblock content %}

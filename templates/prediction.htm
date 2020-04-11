@@ -1,0 +1,113 @@
+{% extends "index.htm" %} {% block content %}
+<div class="row m-lg-5 m-3">
+  <div class="col-12 my-4">
+    <div class="jumbotron">
+      <h3 class="display-4">Your prediction is ready</h3>
+      <p class="lead">
+        <strong>Value Entered: </strong>{{value}}
+      </p>
+      <hr class="my-4" />
+      <p>
+        Predicted value: {{ result }}
+      </p>
+    </div>
+  </div>
+  <div class="col-12 col-lg-6 my-4">
+    <canvas id="myChart1"></canvas>
+  </div>
+  <div class="col-12 col-lg-6 my-4">
+    <canvas id="myChart2"></canvas>
+  </div>
+</div>
+
+<script>
+  var ctx1 = document.getElementById("myChart1").getContext("2d");
+  var scatterChart = new Chart(ctx1, {
+    type: "line",
+    data: {
+      datasets: [
+        {
+          label: "Sea Ice Extet vs Temp",
+          data: [
+            "{% for i in range(10) %}",
+            {
+              x: "{{60+i}}",
+              y: "{{result_10_temp[i]}}",
+            },
+            "{% endfor %}",
+          ],
+          backgroundColor: "rgba(255,0,0,1)",
+        },
+      ],
+    },
+    options: {
+      scales: {
+        xAxes: [
+          {
+            ticks: {
+              min: 60,
+              max: 70,
+            },
+            type: "linear",
+            position: "bottom",
+          },
+        ],
+        yAxes: [
+          {
+            ticks: {
+              min: 39.9,
+              max: 40.2,
+            },
+          },
+        ],
+      },
+    },
+  });
+
+  var ctx2 = document.getElementById("myChart2").getContext("2d");
+  var scatterChart = new Chart(ctx2, {
+    type: "line",
+    data: {
+      datasets: [
+        {
+          label: "Year vs Mean Sea Ice Extent",
+          data: [
+            "{% for i in range(10) %}",
+            {
+              x: "{{2020+i}}",
+              y: "{{result_10_temp[i]}}",
+            },
+            "{% endfor %}",
+          ],
+          backgroundColor: "rgba(255,0,0,1)",
+        },
+      ],
+    },
+    options: {
+      scales: {
+        xAxes: [
+          {
+            ticks: {
+              stepSize: 5,
+              min: 2018,
+              max: 2030,
+            },
+            type: "linear",
+            position: "bottom",
+          },
+        ],
+        yAxes: [
+          {
+            ticks: {
+              stepSize: 1,
+              min: 39.8,
+              max: 40.3,
+            },
+          },
+        ],
+      },
+    },
+  });
+</script>
+
+{% endblock content %}

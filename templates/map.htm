@@ -1,0 +1,85 @@
+{% extends "index.htm" %} {% block content %}
+<div class="row m-lg-5 m-3">
+  <div class="col-12">
+    <div id="map" class="w-100 rounded-lg"></div>
+  </div>
+</div>
+<div class="row m-lg-5 m-3">
+  <div class="col-6">
+    <button onclick="showmap()" class="btn btn-primary btn-block">
+      Get Your Location
+    </button>
+  </div>
+  <div class="col-6">
+    <form
+      action="info"
+      method="POST"
+      onsubmit="return sendRequest()"
+    >
+      <input hidden="true" type="text" id="lat" name="lat" />
+      <input hidden="true" type="text" id="lng" name="lng" />
+      <button type="submit" class="btn btn-primary btn-block">
+        Nearest Cryosphere
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+  var crd;
+  var lat;
+  var lng;
+
+  mapboxgl.accessToken =
+    "pk.eyJ1IjoiYW5pcnVkaGtyMzEwNCIsImEiOiJjazdqZTdwNjMwNHdrM2dxOGttemM3MGI0In0.vLsr8JABQGy9Ix3s6G8tnA";
+  var map = new mapboxgl.Map({
+    container: "map", // container id
+    style: "mapbox://styles/mapbox/streets-v11", // stylesheet location
+    center: [-74.5, 40], // starting position [lng, lat]
+    zoom: 9, // starting zoom
+  });
+
+  function showmap() {
+    navigator.geolocation.getCurrentPosition(success);
+  }
+
+  var marker = new mapboxgl.Marker().setLngLat(map.getCenter()).addTo(map);
+
+  function success(pos) {
+    crd = pos.coords;
+
+    map = new mapboxgl.Map({
+      container: "map", // container id
+      style: "mapbox://styles/mapbox/streets-v11", // stylesheet location
+      center: [crd.longitude, crd.latitude], // starting position [lng, lat]
+      zoom: 9, // starting zoom
+    });
+
+    var marker = new mapboxgl.Marker()
+      .setLngLat([crd.longitude, crd.latitude])
+      .addTo(map);
+
+    lat = crd.latitude;
+    lng = crd.longitude;
+    console.log(`Lattitude: ${crd.latitude}`);
+    console.log(`Longitude: ${crd.longitude}`);
+  }
+
+  function sendRequest() {
+    if (crd != undefined || lat != undefined) {
+      document.getElementById("lat").value = lat;
+      document.getElementById("lng").value = lng;
+      return true;
+    } else {
+      document.getElementById("alert").hidden = false;
+      return false;
+    }
+  }
+  
+  map.on("click", function (e) {
+    marker = new mapboxgl.Marker().setLngLat([e.lngLat.lng, e.lngLat.lat]).addTo(map);
+    lat = e.lngLat.lat; 
+    lng = e.lngLat.lng;
+  });
+</script>
+{% endblock content %}
