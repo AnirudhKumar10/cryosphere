@@ -42,5 +42,3 @@ def prediction():
         return "Pred"
 
 
-if __name__ == '__main__':
-    app.run()
